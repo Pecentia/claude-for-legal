@@ -122,6 +122,15 @@
       "author": {
         "name": "Thomson Reuters"
       }
+    },
+    {
+      "name": "public-records-legal",
+      "displayName": "Public Records Legal",
+      "source": "./public-records-legal",
+      "description": "Reviews how a business collects and resells public court and government records: whether a portal may be collected from, what a bulk-data agreement allows, whether records may be used to solicit the people named in them, what to do when a notice arrives, and whether every cited rule checks out against its primary source.",
+      "author": {
+        "name": "Pecentia"
+      }
     }
   ]
 }
