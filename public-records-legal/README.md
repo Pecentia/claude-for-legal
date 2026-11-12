@@ -24,7 +24,7 @@ Start with `/public-records-legal:cold-start-interview`. It writes the practice 
 - `references/collection-law-primer.md`: the four theories a custodian can use against automated collection, and a five-tier sort for portals.
 - `references/use-and-resale-overlays.md`: the federal and state rules that limit use after lawful collection.
 - `references/primary-source-tools.md`: official sources and open-source tools for checking law.
-- `references/state-solicitation-map.md`: per-state solicitation rules. Empty until rows are verified.
+- `references/state-solicitation-map.md`: per-state solicitation rules. Holds only rows whose quote verified at an official source.
 - `scripts/verify_quotes.py`: checks that a quoted rule appears at the URL it is attributed to. Standard library only.
 
 ```
