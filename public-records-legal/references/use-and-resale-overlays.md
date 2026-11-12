@@ -1,6 +1,6 @@
 # Use and Resale Overlays: what limits the use of records after they are lawfully obtained
 
-**Last verified: 2026-11-11 (written from model knowledge, not yet checked against primary sources).**
+**Last verified: 2026-11-12. The case citations in this file resolve to the named case on CourtListener (`scripts/check_case_citations.py`). Statutes, regulations and the propositions each case is cited for have not been checked.**
 
 > How a record was obtained and what it may be used for are separate questions. A lawful download does not make every use lawful. Verify each citation with `/public-records-legal:verify-citations`; stale after 90 days.
 

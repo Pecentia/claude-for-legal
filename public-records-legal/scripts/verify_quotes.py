@@ -8,19 +8,23 @@ holding a list under "provisions" or "clauses". An entry needs "quote" and
 Output: a JSON report on stdout (or --out FILE) with one row per entry:
   found        the normalized quote, or a long enough run of it, is on the page
   not-found    the page was fetched and the quote is not on it
-  unfetchable  the page could not be fetched or is not text (PDF, 403, timeout)
+  unfetchable  the page could not be fetched or read (403, timeout, a scanned
+               PDF, or a PDF when pypdf is not installed)
   skipped      the entry has no quote or no http(s) URL
 
 "found" proves the words are at that address today. It does not prove the
 rule is in force, complete, or correctly summarized. A lawyer still reads it.
 
-Standard library only. Sends a generic User-Agent and nothing else.
+Standard library only for web pages. PDFs are read when the optional
+pypdf package is installed (pip install pypdf); many court rules are PDFs.
+Sends a generic User-Agent and nothing else.
 """
 from __future__ import annotations
 
 import argparse
 import html
 import http.client
+import io
 import json
 import re
 import sys
@@ -31,7 +35,8 @@ from pathlib import Path
 
 USER_AGENT = "Mozilla/5.0 (compatible; citation-check/1.0)"
 TIMEOUT_SECONDS = 25
-MAX_BYTES = 6_000_000
+MAX_BYTES = 30_000_000
+MIN_PDF_TEXT_CHARS = 200
 MIN_QUOTE_CHARS = 25
 PARTIAL_WINDOW_WORDS = 8
 DELAY_BETWEEN_FETCHES_SECONDS = 1.0
@@ -47,11 +52,26 @@ def normalize(text: str) -> str:
     return NON_WORD_RE.sub(" ", html.unescape(text).lower()).strip()
 
 
+def pdf_text(raw: bytes) -> str | None:
+    """Return the text layer of a PDF, or None when pypdf is missing, the
+    file cannot be parsed, or it is a scan with no usable text layer."""
+    try:
+        from pypdf import PdfReader
+    except ImportError:
+        return None
+    try:
+        reader = PdfReader(io.BytesIO(raw))
+        text = " ".join(page.extract_text() or "" for page in reader.pages)
+    except Exception:  # pypdf raises many types on damaged files; all mean unreadable
+        return None
+    return text if len(text.strip()) >= MIN_PDF_TEXT_CHARS else None
+
+
 def page_text(raw: bytes, content_type: str) -> str | None:
-    """Return visible text for HTML or plain text; None for anything else."""
+    """Return visible text for HTML, plain text or a text PDF; None otherwise."""
     kind = content_type.lower()
     if "pdf" in kind or raw[:5] == b"%PDF-":
-        return None
+        return pdf_text(raw)
     charset_match = re.search(r"charset=([\w-]+)", kind)
     charset = charset_match.group(1) if charset_match else "utf-8"
     try:
@@ -74,7 +94,7 @@ def fetch(url: str) -> tuple[str | None, str]:
         return None, f"fetch failed: {type(error).__name__}"
     text = page_text(raw, content_type)
     if text is None:
-        return None, "not text (PDF or binary): read it by hand"
+        return None, "PDF or binary with no readable text (scan, or pypdf not installed): read it by hand"
     return text, "fetched"
 
 

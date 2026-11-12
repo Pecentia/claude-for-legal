@@ -1,6 +1,6 @@
 # Collection Law Primer: automated access to public records portals
 
-**Last verified: 2026-11-11 (citations written from model knowledge, not yet checked against primary sources).**
+**Last verified: 2026-11-12. All 11 case citations in this file resolve to the named case on CourtListener (`scripts/check_case_citations.py`). Statutes and the propositions each case is cited for have not been checked.**
 
 > **Staleness and accuracy check.** Every citation here is a starting point for a lawyer, not a conclusion. Run `/public-records-legal:verify-citations` on any citation before it goes into advice, and treat this file as stale after 90 days. Scraping law is unsettled and differs by circuit and by state.
 

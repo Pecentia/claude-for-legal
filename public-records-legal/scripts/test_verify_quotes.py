@@ -31,9 +31,29 @@ class PageTextTests(unittest.TestCase):
         self.assertIn("Bulk distribution", text)
         self.assertNotIn("p{}", text)
 
-    def test_returns_none_for_pdf_by_header_or_magic_bytes(self):
+    def test_unparseable_pdf_is_none_by_header_or_magic_bytes(self):
         self.assertIsNone(vq.page_text(b"x", "application/pdf"))
         self.assertIsNone(vq.page_text(b"%PDF-1.7 ...", "application/octet-stream"))
+
+    def test_pdf_is_none_when_pypdf_is_missing(self):
+        with mock.patch.dict(sys.modules, {"pypdf": None}):
+            self.assertIsNone(vq.pdf_text(b"%PDF-1.7"))
+
+    def test_pdf_text_layer_is_returned_and_scans_are_not(self):
+        class Page:
+            def __init__(self, text):
+                self.text = text
+
+            def extract_text(self):
+                return self.text
+
+        def fake_module(pages):
+            return mock.Mock(PdfReader=lambda stream: mock.Mock(pages=pages))
+
+        with mock.patch.dict(sys.modules, {"pypdf": fake_module([Page(RULE * 3), Page(None)])}):
+            self.assertIn("Bulk distribution", vq.page_text(b"%PDF-1.7", "application/pdf"))
+        with mock.patch.dict(sys.modules, {"pypdf": fake_module([Page(""), Page(" ")])}):
+            self.assertIsNone(vq.page_text(b"%PDF-1.7", "application/pdf"))
 
     def test_falls_back_to_utf8_on_unknown_charset(self):
         self.assertEqual(vq.page_text(b"plain", "text/plain; charset=not-a-charset"), "plain")
