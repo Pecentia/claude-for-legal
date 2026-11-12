@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "CourtListener": {
+      "type": "http",
+      "url": "https://mcp.courtlistener.com/",
+      "title": "CourtListener",
+      "description": "Search US case law and dockets and resolve case citations, from the Free Law Project."
+    }
+  },
+  "recommendedCategories": [
+    "legal-research",
+    "regulatory-intelligence",
+    "documents"
+  ]
+}

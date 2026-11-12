@@ -138,6 +138,7 @@ product-legal/            # launch review, marketing claims, "is this a problem?
 regulatory-legal/         # reg feed watcher, policy diff, gap tracker, NPRM comments
 ai-governance-legal/      # AI use-case triage, AIAs, vendor AI review, AI reg gap-check
 ip-legal/                 # trademark clearance, FTO, C&D, DMCA, OSS, IP clauses, portfolio
+public-records-legal/     # portal collection review, bulk data agreements, solicitation-use checks, notices
 litigation-legal/         # portfolio, matters, holds, demands, depo prep, claim charts
 legal-clinic/             # clinic setup, student ramp, intake, deadlines, memos, handoffs
 law-student/              # Socratic drilling, outlining, IRAC, bar prep, flashcards
@@ -249,6 +250,7 @@ Grouped by where the work sits. Each plugin's cold-start interview is what tailo
 | **[ai-governance-legal](./ai-governance-legal)** | AI use-case triage against your registry. Impact assessments across regimes in scope. Vendor AI review. Reg-to-policy gap analysis. |
 | **[regulatory-legal](./regulatory-legal)** | Regulatory feed watcher, policy diff, gaps tracker, NPRM comment-period tracker. The Monday-morning digest your team actually reads. |
 | **[ip-legal](./ip-legal)** | Trademark clearance, FTO triage, C&D drafting and triage, DMCA takedown and counter-notice, OSS compliance, IP clause review, portfolio tracking. |
+| **[public-records-legal](./public-records-legal)** | For businesses that collect and resell court and government records. Portal collection review with a five-tier risk sort. Bulk data agreement review. State solicitation-use checks. Notice and cease-and-desist protocol. Citation and quote verification against primary sources. |
 
 ### Litigation
 
@@ -524,6 +526,17 @@ The full map across all plugins. The cold-start interview is the first thing to 
 | `/product-legal:matter-workspace` | matter-workspace | Manage matter workspaces (practice-level) |
 | — | feature-risk-assessment | Deep-dive risk on a single feature when launch review flags |
 | scheduled | launch-watcher (agent) | Monitors launch tracker for upcoming reviews |
+
+### public-records-legal
+
+| Command | Skill | What it does |
+|---|---|---|
+| `/public-records-legal:cold-start-interview` | cold-start-interview | Cold-start — learns what records you collect, how, and your risk posture |
+| `/public-records-legal:collection-method-review` | collection-method-review | Sort a records portal into a risk tier and recommend a collection method |
+| `/public-records-legal:bulk-agreement-review` | bulk-agreement-review | Review a court or clerk bulk data agreement against a resale business model |
+| `/public-records-legal:solicitation-use-check` | solicitation-use-check | Check whether records may be used to contact the people named, by state, record type and channel |
+| `/public-records-legal:notice-received` | notice-received | Same-day protocol for a cease-and-desist, block or terms change from a custodian |
+| `/public-records-legal:verify-citations` | verify-citations | Check citations and quoted rules against primary sources |
 
 ### regulatory-legal
 
