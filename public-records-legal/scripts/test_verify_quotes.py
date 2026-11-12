@@ -74,6 +74,20 @@ class EntriesFromTests(unittest.TestCase):
         self.assertEqual(vq.entries_from("text"), [])
 
 
+class FirstUrlTests(unittest.TestCase):
+    def test_takes_first_of_several_urls_in_one_field(self):
+        self.assertEqual(vq.first_url("https://a.gov/x ; https://b.com/y"), "https://a.gov/x")
+        self.assertEqual(vq.first_url("https://a.gov/x; https://b.com/y"), "https://a.gov/x")
+        self.assertEqual(vq.first_url(""), "")
+
+
+class FetchTests(unittest.TestCase):
+    def test_malformed_url_is_unfetchable_not_a_crash(self):
+        text, note = vq.fetch("https://a.gov/x y")
+        self.assertIsNone(text)
+        self.assertIn("fetch failed", note)
+
+
 class CheckFileTests(unittest.TestCase):
     def write(self, data) -> Path:
         handle = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8")

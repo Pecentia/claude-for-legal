@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import html
+import http.client
 import json
 import re
 import sys
@@ -69,7 +70,7 @@ def fetch(url: str) -> tuple[str | None, str]:
             content_type = response.headers.get("Content-Type", "")
     except urllib.error.HTTPError as error:
         return None, f"HTTP {error.code}"
-    except (urllib.error.URLError, TimeoutError, OSError, ValueError) as error:
+    except (urllib.error.URLError, http.client.HTTPException, TimeoutError, OSError, ValueError) as error:
         return None, f"fetch failed: {type(error).__name__}"
     text = page_text(raw, content_type)
     if text is None:
@@ -107,11 +108,18 @@ def entries_from(data: object) -> list[dict]:
 
 
 def nested(entry: dict, key: str) -> str:
-    """Read key from the entry, or from a nested {"quote","url"} rule object."""
+    """Read a string field from the entry; anything else counts as absent."""
     value = entry.get(key)
     if isinstance(value, str):
         return value.strip()
     return ""
+
+
+def first_url(value: str) -> str:
+    """Research files sometimes pack several URLs into one field
+    ("https://a ; https://b"). Check the first; a URL never contains spaces."""
+    parts = value.split()
+    return parts[0].rstrip(";,") if parts else ""
 
 
 def check_file(path: Path, cache: dict[str, tuple[str | None, str]]) -> list[dict]:
@@ -122,7 +130,7 @@ def check_file(path: Path, cache: dict[str, tuple[str | None, str]]) -> list[dic
     rows = []
     for entry in entries_from(data):
         label = nested(entry, "citation") or nested(entry, "topic") or "(no citation)"
-        quote, url = nested(entry, "quote"), nested(entry, "url")
+        quote, url = nested(entry, "quote"), first_url(nested(entry, "url"))
         row = {"file": path.name, "citation": label, "url": url}
         if not quote or not url.startswith(("http://", "https://")):
             rows.append({**row, "status": "skipped", "note": "no quote or no http(s) URL"})
